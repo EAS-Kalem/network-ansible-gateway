@@ -1,0 +1,101 @@
+---
+- name: python defaults
+  ansible.builtin.blockinfile:
+     path: /usr/bin/python
+     block: | 
+      ansible_python_interpreter=/usr/bin/python3
+
+- name: subscription-manager refresh
+  command: subscription-manager refresh
+
+- name: install iptables-services
+  command: yum install -y iptables-services
+
+- name: delete /etc/sysconfig/network/
+  command: sudo rm -rf /etc/sysconfig/network
+
+- name: edit /etc/sysconfig/network
+  ansible.builtin.blockinfile:
+     path: /etc/sysconfig/network
+     block: |
+      NETWORKING=yes 
+      HOSTNAME=nat 
+      GATEWAY={{ hostvars['gateway'].ansible_host }}
+     create: yes
+
+- name: edit ens224
+  blockinfile:
+    dest:  /etc/sysconfig/network-scripts/ifcfg-ens224
+    block: |
+      GATEWAY={{ hostvars['gateway'].ansible_host }}
+    insertafter: EOF
+    create: yes
+
+- name: Flush tables
+  command: "iptables -F"
+
+- name: Flush nat and mangle table
+  command: "iptables -t {{ item }} -F"
+  loop:
+    - "nat"
+    - "mangle"
+
+- name: Delete tables
+  command: "iptables -X"
+
+- name: Delete nat and mangle tables
+  command: "iptables -t {{ item }} -X"
+  loop:
+    - "nat"
+    - "mangle"
+
+# - name: iptables rule 1
+#   command: iptables -t nat -A POSTROUTING -o ens192 -j MASQUERADE
+
+# - name: iptables rule 2
+#   command: iptables -A FORWARD -i ens224 -j ACCEPT
+
+- name: Iptables IP forwarding and masquerading
+  ansible.builtin.iptables:
+    chain: POSTROUTING
+    out_interface: ens192
+    jump: MASQUERADE
+    table: nat
+
+- name: Iptables IP forwarding and masquerading
+  ansible.builtin.iptables:
+    chain: FORWARD
+    in_interface: ens224    
+    jump: ACCEPT
+
+# - name: Enable ip forwarding 1
+#   ansible.builtin.blockinfile:
+#      path: /etc/sysctl.conf
+#      block: |
+#       net.ipv4.ip_forward = 1
+#      insertafter: EOF
+#      create: yes
+
+- name: Enable ip forwarding 2
+  ansible.posix.sysctl:
+      name: net.ipv4.ip_forward
+      value: '1'
+      sysctl_set: yes
+      state: present
+      reload: yes
+
+- name: save ip forwarding 1
+  command: sudo sysctl -p
+
+- name: save iptables
+  command: service iptables save
+  become: true
+  
+- name: restart iptables
+  command: service iptables restart
+
+- name: restart conn
+  command: nmcli connection reload && nmcli connection up ens160 && ifup ens160 
+
+- name: systemctl start iptables
+  command: systemctl start iptables

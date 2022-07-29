@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include network.gateway"
+      include_role:
+        name: "network.gateway"
