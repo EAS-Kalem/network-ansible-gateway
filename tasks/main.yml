@@ -20,7 +20,7 @@
      block: |
       NETWORKING=yes 
       HOSTNAME=nat 
-      GATEWAY={{ hostvars['gateway'].ansible_host }}
+      GATEWAY={{ hostvars['kalem-gateway'].ansible_host }}
       DNS=10.0.0.2
      create: yes
 
@@ -28,7 +28,7 @@
   blockinfile:
     dest:  /etc/sysconfig/network-scripts/ifcfg-ens224
     block: |
-      GATEWAY={{ hostvars['gateway'].ansible_host }}
+      GATEWAY={{ hostvars['kalem-gateway'].ansible_host }}
       DNS=10.0.0.2
     insertafter: EOF
     create: yes
