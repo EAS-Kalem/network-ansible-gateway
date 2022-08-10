@@ -1,2 +1,13 @@
 ---
 DOMAIN_NAME: kalem.local
+SUBNET: 10.0.0.0
+RANGE: 10.0.0.10 10.0.0.50
+DNS: "{{ hostvars['kalem-dns'].ansible_ens224.ipv4.address }}"
+in_interface: ens224
+out_interface: ens192
+GW_MAC: "{{ hostvars['kalem-gateway'].ansible_ens224.macaddress }}"
+GW_IP: "{{ hostvars['kalem-gateway'].ansible_ens224.ipv4.address }}"    
+DHCP_MAC: "{{ hostvars['kalem-dhcp'].ansible_ens224.macadress }}"   
+DHCP_IP: "{{ hostvars['kalem-dhcp'].ansible_ens224.ipv4.address }}" 
+DNS_MAC: "{{ hostvars['kalem-dns'].ansible_ens224.macadress }}"   
+DNS_IP: "{{ hostvars['kalem-dns'].ansible_ens224.ipv4.address }}" 

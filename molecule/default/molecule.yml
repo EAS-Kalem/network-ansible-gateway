@@ -32,8 +32,8 @@ platforms:
       memory_mb: 2048 # is memory size(MB) to be configured to an instance
     networks:
       - name: VM Network # is a port group to be assigned to an instance
-        type: dhcp
-        start_connected: true
+        ip: 192.168.9.99
+        netmask: 255.255.255.0
         connected: true
       - name: kalem # is a port group to be assigned to an instance
         ip: 10.0.0.5
