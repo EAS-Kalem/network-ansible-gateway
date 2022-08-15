@@ -86,6 +86,9 @@
       state: present
       reload: yes
 
+- name: ifup
+  command: ifup ens224
+  
 - name: save ip forwarding 1
   command: sudo sysctl -p
 
@@ -101,3 +104,4 @@
 
 - name: systemctl start iptables
   command: systemctl start iptables
+
