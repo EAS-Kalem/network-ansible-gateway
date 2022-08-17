@@ -30,6 +30,7 @@
     block: |
       GATEWAY={{GW_IP}}
       DNS={{DNS_IP}}
+      DOMAIN={{DOMAIN_NAME}}
     insertafter: EOF
     create: yes
 
