@@ -51,32 +51,32 @@
     - "nat"
     - "mangle"
 
-# - name: iptables rule 1
-#   command: iptables -t nat -A POSTROUTING -o ens192 -j MASQUERADE
+- name: iptables rule 1
+  command: iptables -t nat -A POSTROUTING -o ens192 -j MASQUERADE
 
-# - name: iptables rule 2
-#   command: iptables -A FORWARD -i ens224 -j ACCEPT
+- name: iptables rule 2
+  command: iptables -A FORWARD -i ens224 -j ACCEPT
 
-- name: Iptables IP forwarding and masquerading
-  ansible.builtin.iptables:
-    chain: POSTROUTING
-    out_interface: ens192
-    jump: MASQUERADE
-    table: nat
+# - name: Iptables IP forwarding and masquerading
+#   ansible.builtin.iptables:
+#     chain: POSTROUTING
+#     out_interface: ens192
+#     jump: MASQUERADE
+#     table: nat
 
-- name: Iptables IP forwarding and masquerading
-  ansible.builtin.iptables:
-    chain: FORWARD
-    in_interface: ens224    
-    jump: ACCEPT
+# - name: Iptables IP forwarding and masquerading
+#   ansible.builtin.iptables:
+#     chain: FORWARD
+#     in_interface: ens224    
+#     jump: ACCEPT
 
-# - name: Enable ip forwarding 1
-#   ansible.builtin.blockinfile:
-#      path: /etc/sysctl.conf
-#      block: |
-#       net.ipv4.ip_forward = 1
-#      insertafter: EOF
-#      create: yes
+- name: Enable ip forwarding 1
+  ansible.builtin.blockinfile:
+     path: /etc/sysctl.conf
+     block: |
+      net.ipv4.ip_forward = 1
+     insertafter: EOF
+     create: yes
 
 - name: Enable ip forwarding 2
   ansible.posix.sysctl:
