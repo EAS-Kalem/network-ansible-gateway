@@ -30,7 +30,7 @@
     dest:  /etc/sysconfig/network-scripts/ifcfg-{{in_interface}}
     block: |
       GATEWAY={{ GW_IP }}
-      DNS1={{DNS}}
+      DNS1={{ DNS }}
       DOMAIN={{DOMAIN_NAME}}
     insertafter: EOF
     create: yes
