@@ -1,57 +1,36 @@
 ---
-- name: python defaults
-  ansible.builtin.blockinfile:
-     path: /usr/bin/python
-     block: | 
-      ansible_python_interpreter=/usr/bin/python3
-
 - name: subscription-manager refresh
   command: subscription-manager refresh
 
-- name: install iptables-services
-  command: yum install -y iptables-services
-
-- name: delete /etc/sysconfig/network/
-  command: sudo rm -rf /etc/sysconfig/network
-
 - name: edit /etc/sysconfig/network
-  ansible.builtin.blockinfile:
-     path: /etc/sysconfig/network
-     block: |
-      NETWORKING=yes 
-      HOSTNAME=nat 
-      GATEWAY={{ GW_IP }}
-      DNS={{ DNS }}
-      DOMAIN={{DOMAIN_NAME}}
-     create: yes
-
-- name: edit ens224
   blockinfile:
-    dest:  /etc/sysconfig/network-scripts/ifcfg-{{in_interface}}
+    path: /etc/sysconfig/network
     block: |
       GATEWAY={{ GW_IP }}
+      DEFROUTE=yes
       DNS1={{ DNS }}
       DOMAIN={{DOMAIN_NAME}}
-    insertafter: EOF
+    Insertafter: EOF
     create: yes
+  
+- name: Install the latest of iptables-services
+  ansible.builtin.yum:
+      name: iptables-services
+      state: latest
 
-- name: Flush tables
+- name: Flushing table
   command: "iptables -F"
 
-- name: Flush nat and mangle table
+- name: Flushing tables
   command: "iptables -t {{ item }} -F"
-  loop:
-    - "nat"
-    - "mangle"
+  loop: [ nat, mangle ]
 
-- name: Delete tables
+- name: Deleting table
   command: "iptables -X"
 
-- name: Delete nat and mangle tables
+- name: Deleting tables
   command: "iptables -t {{ item }} -X"
-  loop:
-    - "nat"
-    - "mangle"
+  loop: [ nat, mangle ]
 
 - name: iptables rule 1
   command: iptables -t nat -A POSTROUTING -o ens192 -j MASQUERADE
@@ -59,18 +38,18 @@
 - name: iptables rule 2
   command: iptables -A FORWARD -i ens224 -j ACCEPT
 
-# - name: Iptables IP forwarding and masquerading
-#   ansible.builtin.iptables:
-#     chain: POSTROUTING
-#     out_interface: ens192
-#     jump: MASQUERADE
-#     table: nat
+- name: Iptables IP forwarding and masquerading
+  ansible.builtin.iptables:
+    chain: POSTROUTING
+    out_interface: ens192
+    jump: MASQUERADE
+    table: nat
 
-# - name: Iptables IP forwarding and masquerading
-#   ansible.builtin.iptables:
-#     chain: FORWARD
-#     in_interface: ens224    
-#     jump: ACCEPT
+- name: Iptables IP forwarding and masquerading
+  ansible.builtin.iptables:
+    chain: FORWARD
+    in_interface: ens224    
+    jump: ACCEPT
 
 - name: Enable ip forwarding 1
   ansible.builtin.blockinfile:
@@ -107,3 +86,7 @@
 - name: systemctl start iptables
   command: systemctl start iptables
 
+- name: reloading network
+  service:
+    name: network
+    state: restarted
