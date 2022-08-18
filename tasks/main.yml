@@ -21,7 +21,8 @@
       NETWORKING=yes 
       HOSTNAME=nat 
       GATEWAY={{ GW_IP }}
-      DNS={{DNS}}
+      DNS={{ DNS }}
+      DOMAIN={{DOMAIN_NAME}}
      create: yes
 
 - name: edit ens224
