@@ -20,16 +20,16 @@
      block: |
       NETWORKING=yes 
       HOSTNAME=nat 
-      GATEWAY={{GW_IP}}
-      DNS={{DNS_IP}}
+      GATEWAY={{ GW_IP }}
+      DNS={{DNS}}
      create: yes
 
 - name: edit ens224
   blockinfile:
     dest:  /etc/sysconfig/network-scripts/ifcfg-{{in_interface}}
     block: |
-      GATEWAY={{GW_IP}}
-      DNS={{DNS_IP}}
+      GATEWAY={{ GW_IP }}
+      DNS1={{DNS}}
       DOMAIN={{DOMAIN_NAME}}
     insertafter: EOF
     create: yes
