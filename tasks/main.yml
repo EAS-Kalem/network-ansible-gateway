@@ -86,6 +86,9 @@
 - name: systemctl start iptables
   command: systemctl start iptables
 
+- name: systemctl start iptables
+  command: nmcli conn modify "ens192" ipv4.ignore-auto-dns yes
+
 - name: reloading network
   service:
     name: network
