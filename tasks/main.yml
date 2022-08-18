@@ -4,7 +4,7 @@
 
 - name: edit /etc/sysconfig/network
   blockinfile:
-    path: /etc/sysconfig/network
+    path: /etc/sysconfig/network-scripts/ifcfg-ens224
     block: |
       GATEWAY={{ GW_IP }}
       DEFROUTE=yes
