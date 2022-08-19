@@ -6,7 +6,7 @@
   blockinfile:
     path: /etc/sysconfig/network-scripts/ifcfg-ens224
     block: |
-      GATEWAY= 192.168.7.52 
+      GATEWAY={{GW_IP2}}
       DEFROUTE=yes
       DNS1={{ DNS }}
       DOMAIN={{DOMAIN_NAME}}

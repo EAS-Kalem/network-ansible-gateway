@@ -7,5 +7,6 @@ in_interface: ens224
 out_interface: ens192
 GW_MAC: "{{ hostvars['gateway'].ansible_ens224.macaddress }}"
 GW_IP: 10.0.0.1
+GW_IP2: 192.168.1.100 
 DHCP_MAC: "{{ hostvars['dhcp'].ansible_ens224.macadress }}"   
 DHCP_IP: 10.0.0.2
